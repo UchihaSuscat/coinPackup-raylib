@@ -3,7 +3,6 @@
 #include "coin/coin.hpp"
 
 
-
 #include <vector>
 #include <iostream>
 #include <string>
@@ -15,22 +14,21 @@ int main()
 
     std::vector<Coin> coins;
 
-    /* GENERATION OF COINS SO IT STAYS WITHIN THE REACH OF THE SCREEN */
+    Texture2D coinTexture = LoadTexture(RES "coin/coin.png");
+    if (coinTexture.id == 0) {
+        std::cerr << "Error loading coin texture" << std::endl;
+        return -1;
+    }
+
+    // Generate Coins
     for (int i = 0; i < 10; i++)
     {
         Coin coin;
-        Texture2D texture = LoadTexture(RES "coin/coin.png");
-        if (texture.id == 0){
-            std::cerr << "Error loading coin texture" << std::endl;
-            continue;
-        }
-        coin.texture = texture;
-
+        coin.texture = coinTexture;
         coin.width = coin.texture.width;
         coin.height = coin.texture.height;
         coin.x = GetRandomValue(0, 1280 / 2);
         coin.y = GetRandomValue(0, 720 / 2);
-
         coins.push_back(coin);
     }
 
@@ -42,13 +40,12 @@ int main()
         // Player update func
         player.Update(dt);
         
-        for (auto it = coins.begin(); it != coins.end(); ++it) {
-            if (CheckCollisionRecs(player.getRectangle(), it->getRectangle())) {
-                player.score++;
-                coins.erase(it);
-                break;
-            }
-        }
+        // Remove coins if collected
+        coins.erase(std::remove_if(coins.begin(), coins.end(),
+            [&player](const Coin& coin) {
+                return CheckCollisionRecs(player.getRectangle(), coin.getRectangle());
+            }),
+            coins.end());
              
 
         // Draw
@@ -66,5 +63,6 @@ int main()
         window.EndDraw();
     }
 
+    UnloadTexture(coinTexture);
     return 0;
 }
