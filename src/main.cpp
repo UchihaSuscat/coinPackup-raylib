@@ -2,27 +2,14 @@
 #include "player/player.hpp"
 #include "coin/coin.hpp"
 
-
 #include <vector>
 #include <iostream>
 #include <string>
 
-int main()
-{
-    Window window(1280, 720, "Hello");
-    Player player;
-
-    std::vector<Coin> coins;
-
-    Texture2D coinTexture = LoadTexture(RES "coin/coin.png");
-    if (coinTexture.id == 0) {
-        std::cerr << "Error loading coin texture" << std::endl;
-        return -1;
-    }
-
-    // Generate Coins
-    for (int i = 0; i < 10; i++)
-    {
+// Function to generate coins
+void GenerateCoins(std::vector<Coin>& coins, Texture2D& coinTexture, int count) {
+    coins.clear();
+    for (int i = 0; i < count; i++) {
         Coin coin;
         coin.texture = coinTexture;
         coin.width = coin.texture.width;
@@ -31,22 +18,44 @@ int main()
         coin.y = GetRandomValue(0, 720 / 2);
         coins.push_back(coin);
     }
+}
 
-    while (!window.ShouldClose())
-    {
+// Function to update score and remove collected coins
+void UpdateScore(Player& player, std::vector<Coin>& coins) {
+    coins.erase(std::remove_if(coins.begin(), coins.end(),
+        [&player](const Coin& coin) {
+            if (CheckCollisionRecs(player.getRectangle(), coin.getRectangle())) {
+                player.score++;
+                return true;
+            }
+            return false;
+        }),
+        coins.end());
+}
+
+int main() {
+    Window window(1280, 720, "Hello");
+    Player player;
+
+    std::vector<Coin> coins;
+
+    // Load coin texture
+    Texture2D coinTexture = LoadTexture(RES "coin/coin.png");
+    if (coinTexture.id == 0) {
+        std::cerr << "Error loading coin texture" << std::endl;
+        return -1;
+    }
+
+    // Generate Coins
+    GenerateCoins(coins, coinTexture, 10);
+
+    while (!window.ShouldClose()) {
         // Update
         float dt = GetFrameTime();
-
-        // Player update func
         player.Update(dt);
-        
-        // Remove coins if collected
-        coins.erase(std::remove_if(coins.begin(), coins.end(),
-            [&player](const Coin& coin) {
-                return CheckCollisionRecs(player.getRectangle(), coin.getRectangle());
-            }),
-            coins.end());
-             
+
+        // Update score & remove collected coins
+        UpdateScore(player, coins);
 
         // Draw
         window.BeginDraw();
