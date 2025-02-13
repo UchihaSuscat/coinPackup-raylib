@@ -32,12 +32,13 @@ void Player::Update(float dt)
 
 void Player::Draw()
 {
+    DrawRectangle(pos.x, pos.y / texture.height, (float)texture.width * 5, (float)texture.height * 5, GREEN);
     DrawTextureEx(texture, pos, 0.0f, 2.0f, WHITE);
 }
 
 Rectangle Player::getRectangle() const
 {
-    return Rectangle{pos.x, pos.y, (float)texture.width, (float)texture.height};
+    return Rectangle{pos.x, pos.y, (float)texture.width * 5, (float)texture.height * 5};
 }
 
 void Player::movement(float dt)
