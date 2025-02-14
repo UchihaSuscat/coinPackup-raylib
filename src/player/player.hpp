@@ -6,6 +6,8 @@
 
 #include <iostream>
 
+#include "../animation/animation.hpp"
+
 class Player
 {
     public:
@@ -22,11 +24,15 @@ class Player
     private:
         void movement(float dt);
 
-        Texture2D texture;
+        bool isRunning;
 
         Vector2 pos;
         Vector2 velocity;
         float speed;
+
+        // Animations
+        Animation p_idle;
+        Animation p_walk;
 
 
 
