@@ -61,7 +61,6 @@ void Player::movement(float dt)
 {
     
     Vector2 direction = {0.0f, 0.0f};
-
     // Movement using wasd
     if (IsKeyDown(KEY_W)) direction.y -= 1.0f;
     if (IsKeyDown(KEY_S)) direction.y += 1.0f;
