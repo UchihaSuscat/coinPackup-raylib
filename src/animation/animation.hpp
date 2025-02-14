@@ -10,6 +10,7 @@
 class Animation {
 
     public:
+        bool flipped = false;
         float anim_speed = 10;
         void setFrame(int frame);
         bool animated = true;

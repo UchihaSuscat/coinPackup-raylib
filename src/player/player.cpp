@@ -65,8 +65,16 @@ void Player::movement(float dt)
     // Movement using wasd
     if (IsKeyDown(KEY_W)) direction.y -= 1.0f;
     if (IsKeyDown(KEY_S)) direction.y += 1.0f;
-    if (IsKeyDown(KEY_A)) direction.x -= 1.0f;
-    if (IsKeyDown(KEY_D)) direction.x += 1.0f;
+    if (IsKeyDown(KEY_A)) {
+        direction.x -= 1.0f;
+        p_walk.flipped = true;
+        p_idle.flipped = true;
+    }
+    if (IsKeyDown(KEY_D)) {
+        direction.x += 1.0f;
+        p_walk.flipped = false;
+        p_idle.flipped = false;
+    }
 
     // Normalize direction to ensure consistent speed
     if (Vector2Length(direction) != 0) {

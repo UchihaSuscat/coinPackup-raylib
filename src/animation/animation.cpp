@@ -33,9 +33,20 @@ void Animation::draw()
         rect.x = (float)current_frame * (float)texture.width / frames;
     }
 
-    // Scale the sprite using DrawTexturePro()
+    // Create a copy of rect to modify for flipping
+    Rectangle source_rect = rect;
+
+    if (flipped)
+    {
+        source_rect.width = -source_rect.width;  // Flip horizontally
+        source_rect.x += rect.width;            // Shift x to keep correct frame
+    }
+
+    // Destination rectangle for drawing
     Rectangle dest = { pos.x, pos.y, rect.width * scale, rect.height * scale };
     Vector2 origin = { 0.0f, 0.0f };
 
-    DrawTexturePro(texture, rect, dest, origin, 0.0f, WHITE);
+    DrawTexturePro(texture, source_rect, dest, origin, 0.0f, WHITE);
 }
+
+
